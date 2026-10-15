@@ -5,7 +5,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'red',
   },
   text: {
     color: 'rgb(30, 24, 4023)',
@@ -14,16 +13,14 @@ export const styles = StyleSheet.create({
     textAlignVertical: 'center',
     fontSize: 25,
     flex: 0.1,
-    backgroundColor: 'yellow',
   },
   box1: {
-    flex: 0.3,
+    flex: 0.5,
     width: '100%',
-    backgroundColor: 'blue',
+    alignItems: 'center',
   },
   box2: {
     width: '100%',
-    flex: 0.3,
-    backgroundColor: 'green',
+    flex: 0.4,
   },
 });
