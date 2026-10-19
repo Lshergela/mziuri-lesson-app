@@ -15,12 +15,13 @@ export const styles = StyleSheet.create({
     flex: 0.1,
   },
   box1: {
-    flex: 0.5,
+    flex: 0.3,
     width: '100%',
     alignItems: 'center',
   },
   box2: {
     width: '100%',
-    flex: 0.4,
+    flex: 0.6,
+    alignItems: 'center',
   },
 });

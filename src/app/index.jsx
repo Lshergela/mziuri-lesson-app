@@ -1,6 +1,15 @@
+import { Formik } from 'formik';
 import { useState } from 'react';
-import { FlatList, ScrollView, Text, View } from 'react-native';
+import {
+  FlatList,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as z from 'zod';
 import ProductCard from '../components/product-card';
 import { styles } from '../styles/index.styles';
 
@@ -37,6 +46,12 @@ const PRODUCTS = [
   },
 ];
 
+const ProductValidation = z.object({
+  productName: z.string('Product Name is Required'),
+  price: z.number('Price is Required'),
+  inStock: z.boolean('In Stock is Required'),
+});
+
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
@@ -46,10 +61,104 @@ export default function HomeScreen() {
       setRefreshing(false);
     }, 2000);
   };
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.text}>Products</Text>
       <View style={styles.box1}>
+        <Formik
+          initialValues={{
+            productName: '',
+            price: 0,
+            inStock: false,
+          }}
+          onSubmit={(values) => console.log(values)}
+        >
+          {({
+            handleChange,
+            values,
+            errors,
+            handleSubmit,
+            touched,
+            handleBlur,
+            setFieldValue,
+          }) => (
+            <View
+              style={{
+                width: '100%',
+                flex: 1,
+                paddingHorizontal: 10,
+                justifyContent: 'center',
+              }}
+            >
+              <TextInput
+                placeholder="Product Name"
+                style={{
+                  borderColor: 'black',
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  marginBottom: 8,
+                }}
+                value={values.productName}
+                onChangeText={(text) => setFieldValue('productName', text)}
+              />
+              {errors.productName && (
+                <Text style={{ color: 'red' }}>{errors.productName}</Text>
+              )}
+
+              <TextInput
+                placeholder="Product Price"
+                style={{
+                  borderColor: 'black',
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  marginBottom: 8,
+                }}
+                keyboardType="number-pad"
+                value={values.price}
+                onChangeText={(text) => setFieldValue('price', Number(text))}
+              />
+              {errors.price && (
+                <Text style={{ color: 'red' }}>{errors.price}</Text>
+              )}
+
+              <View
+                style={{
+                  marginVertical: 8,
+                  alignItems: 'flex-start',
+                }}
+              >
+                <Text>Product In Stock</Text>
+                <Switch
+                  value={values.inStock}
+                  onValueChange={(value) => setFieldValue('inStock', value)}
+                />
+                {errors.inStock && (
+                  <Text style={{ color: 'red' }}>{errors.inStock}</Text>
+                )}
+              </View>
+
+              <TouchableOpacity
+                activeOpacity={0.65}
+                style={{
+                  width: '100%',
+                  backgroundColor: 'green',
+                  padding: 8,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={handleSubmit}
+              >
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 600 }}>
+                  Create Product
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </Formik>
+      </View>
+      <Text style={styles.text}>Products</Text>
+      <View style={styles.box2}>
         <FlatList
           data={PRODUCTS}
           renderItem={({ item }) => <ProductCard product={item} />}
@@ -57,19 +166,6 @@ export default function HomeScreen() {
           refreshing={refreshing}
           onRefresh={onRefresh}
         />
-      </View>
-      <View style={styles.box2}>
-        <ScrollView style={{ backgroundColor: 'pink' }}>
-          <Text style={{ fontSize: 30 }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Text>
-        </ScrollView>
       </View>
     </SafeAreaView>
   );
