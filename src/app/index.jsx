@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as z from 'zod';
+import { boolean, number, object, string } from 'yup';
 import ProductCard from '../components/product-card';
 import { styles } from '../styles/index.styles';
 
@@ -46,10 +46,12 @@ const PRODUCTS = [
   },
 ];
 
-const ProductValidation = z.object({
-  productName: z.string('Product Name is Required'),
-  price: z.number('Price is Required'),
-  inStock: z.boolean('In Stock is Required'),
+const ProductValidation = object({
+  productName: string().required('Product Name is Required'),
+  price: number()
+    .required('Price is Required')
+    .min(1, 'Price must be at least 1'),
+  inStock: boolean(),
 });
 
 export default function HomeScreen() {
@@ -72,6 +74,7 @@ export default function HomeScreen() {
             inStock: false,
           }}
           onSubmit={(values) => console.log(values)}
+          validationSchema={ProductValidation}
         >
           {({
             handleChange,
@@ -99,9 +102,10 @@ export default function HomeScreen() {
                   marginBottom: 8,
                 }}
                 value={values.productName}
-                onChangeText={(text) => setFieldValue('productName', text)}
+                onChangeText={handleChange('productName')}
+                onBlur={handleBlur('productName')}
               />
-              {errors.productName && (
+              {touched.productName && errors.productName && (
                 <Text style={{ color: 'red' }}>{errors.productName}</Text>
               )}
 
@@ -114,10 +118,10 @@ export default function HomeScreen() {
                   marginBottom: 8,
                 }}
                 keyboardType="number-pad"
-                value={values.price}
+                value={String(values.price)}
                 onChangeText={(text) => setFieldValue('price', Number(text))}
               />
-              {errors.price && (
+              {touched.price && errors.price && (
                 <Text style={{ color: 'red' }}>{errors.price}</Text>
               )}
 
@@ -132,7 +136,7 @@ export default function HomeScreen() {
                   value={values.inStock}
                   onValueChange={(value) => setFieldValue('inStock', value)}
                 />
-                {errors.inStock && (
+                {touched.inStock && errors.inStock && (
                   <Text style={{ color: 'red' }}>{errors.inStock}</Text>
                 )}
               </View>
