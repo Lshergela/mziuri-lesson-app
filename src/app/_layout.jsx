@@ -8,7 +8,7 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <Tabs>
         <Tabs.Screen name="index" />
-        <Tabs.Screen name="todos" />
+        <Tabs.Screen name="posts" />
       </Tabs>
     </QueryClientProvider>
   );
